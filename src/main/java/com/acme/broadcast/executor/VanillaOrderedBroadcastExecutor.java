@@ -18,13 +18,13 @@ public class VanillaOrderedBroadcastExecutor implements OrderedBroadcastExecutor
   public void execute(Intent intent) {
     Set<IntentFilterAndReceiver> highestToLowestPriorityReceivers = context.getHighestToLowestPriorityReceivers();
     boolean shouldAbort = false;
-    for (IntentFilterAndReceiver receiver : highestToLowestPriorityReceivers) {
+    for (IntentFilterAndReceiver filterAndReceiver : highestToLowestPriorityReceivers) {
       if (shouldAbort) {
         break;
       }
       try {
-        receiver.getReceiver().handle(intent);
-        shouldAbort = receiver.getReceiver().shouldAbort();
+        filterAndReceiver.getReceiver().handle(intent);
+        shouldAbort = filterAndReceiver.getReceiver().shouldAbort();
       } catch (Throwable e) {
         // ignore and move on
       }

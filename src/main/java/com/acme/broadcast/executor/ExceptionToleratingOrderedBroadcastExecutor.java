@@ -19,15 +19,15 @@ public class ExceptionToleratingOrderedBroadcastExecutor implements OrderedBroad
     Set<IntentFilterAndReceiver> highestToLowestPriorityReceivers =
         context.getHighestToLowestPriorityReceivers();
     boolean shouldAbort = false;
-    for (IntentFilterAndReceiver receiver : highestToLowestPriorityReceivers) {
+    for (IntentFilterAndReceiver filterAndReceiver : highestToLowestPriorityReceivers) {
       if (shouldAbort) {
         break;
       }
       try {
-        receiver.getReceiver().handle(intent);
+        filterAndReceiver.getReceiver().handle(intent);
       } catch (Throwable e) {
         // ignore
-        shouldAbort = receiver.getReceiver().shouldAbort();
+        shouldAbort = filterAndReceiver.getReceiver().shouldAbort();
       }
     }
   }
