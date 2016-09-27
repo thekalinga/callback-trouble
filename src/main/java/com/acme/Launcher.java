@@ -41,12 +41,12 @@ public class Launcher {
 
     System.out.println("Rx approach; Vanilla executor");
     System.out.println("--------");
-    rxBroadcast(context, new VanillaOrderedBroadcastExecutor(context));
+    rxBroadcast(context, vanillaExecutor);
     System.out.println("\n");
 
     System.out.println("Rx approach (with IntentProxy); Vanilla executor");
     System.out.println("--------");
-    rxBroadcastWithIntentProxy(context, new VanillaOrderedBroadcastExecutor(context));
+    rxBroadcastWithIntentProxy(context, vanillaExecutor);
     System.out.println("\n");
 
     System.out.println("No rx approach; Exception tolerating executor");
