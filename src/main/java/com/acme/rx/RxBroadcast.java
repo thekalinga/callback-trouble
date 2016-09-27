@@ -21,6 +21,7 @@ public class RxBroadcast {
         public void handle(Intent intent) {
           subscriber.onNext(new Intent());
           proxyConsumer.accept(new BroadcastReceiverProxy(this));
+          throw new RuntimeException("Intentional exception");
         }
       };
       context.subscribe(receiver, filter);
