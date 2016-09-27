@@ -1,4 +1,4 @@
-package com.acme.platform.executor;
+package com.acme.broadcast.executor;
 
 import com.acme.broadcast.Intent;
 import com.acme.platform.IntentFilterAndReceiver;
@@ -6,17 +6,18 @@ import com.acme.platform.Context;
 
 import java.util.Set;
 
-public class VanillaOrderedBroadcastExecutor implements OrderedBroadcastExecutor {
+public class ExceptionToleratingOrderedBroadcastExecutor implements OrderedBroadcastExecutor {
 
   private final Context context;
 
-  public VanillaOrderedBroadcastExecutor(Context context) {
+  public ExceptionToleratingOrderedBroadcastExecutor(Context context) {
     this.context = context;
   }
 
   @Override
   public void execute(Intent intent) {
-    Set<IntentFilterAndReceiver> highestToLowestPriorityReceivers = context.getHighestToLowestPriorityReceivers();
+    Set<IntentFilterAndReceiver> highestToLowestPriorityReceivers =
+        context.getHighestToLowestPriorityReceivers();
     boolean shouldAbort = false;
     for (IntentFilterAndReceiver receiver : highestToLowestPriorityReceivers) {
       if (shouldAbort) {
@@ -24,9 +25,9 @@ public class VanillaOrderedBroadcastExecutor implements OrderedBroadcastExecutor
       }
       try {
         receiver.getReceiver().handle(intent);
-        shouldAbort = receiver.getReceiver().shouldAbort();
       } catch (Throwable e) {
-        // ignore and move on
+        // ignore
+        shouldAbort = receiver.getReceiver().shouldAbort();
       }
     }
   }

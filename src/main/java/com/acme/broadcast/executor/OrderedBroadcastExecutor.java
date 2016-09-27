@@ -1,4 +1,4 @@
-package com.acme.platform.executor;
+package com.acme.broadcast.executor;
 
 import com.acme.broadcast.Intent;
 

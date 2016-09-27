@@ -4,9 +4,9 @@ import com.acme.broadcast.BroadcastReceiver;
 import com.acme.broadcast.Intent;
 import com.acme.broadcast.IntentFilter;
 import com.acme.platform.Context;
-import com.acme.platform.executor.ExceptionToleratingOrderedBroadcastExecutor;
-import com.acme.platform.executor.OrderedBroadcastExecutor;
-import com.acme.platform.executor.VanillaOrderedBroadcastExecutor;
+import com.acme.broadcast.executor.ExceptionToleratingOrderedBroadcastExecutor;
+import com.acme.broadcast.executor.OrderedBroadcastExecutor;
+import com.acme.broadcast.executor.VanillaOrderedBroadcastExecutor;
 
 import static com.acme.rx.RxBroadcast.fromBroadcast;
 import static com.acme.rx.RxBroadcast.fromBroadcastWithIntentAndReceiverProxy;
