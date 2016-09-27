@@ -25,71 +25,57 @@ public class Launcher {
       System.out.println("Cascaded till lowest priority receiver");
     }
   };
-
   private static IntentFilter highPriorityReceiverFilter = new IntentFilter(1);
   private static IntentFilter lowPriorityReceiverFilter = new IntentFilter(0);
 
   public static void main(String[] args) {
     Context context = new Context();
-    System.out.println("\n");
+    OrderedBroadcastExecutor vanillaExecutor = new VanillaOrderedBroadcastExecutor(context);
+    OrderedBroadcastExecutor toleratingExecutor = new ExceptionToleratingOrderedBroadcastExecutor(context);
 
+    System.out.println("\n");
     System.out.println("No rx approach; Vanilla executor");
     System.out.println("--------");
-    context.subscribe(highPriorityNativeReceiver, highPriorityReceiverFilter);
-    context.subscribe(lowPriorityNativeReceiver, lowPriorityReceiverFilter);
-
-    OrderedBroadcastExecutor vanillaExecutor = new VanillaOrderedBroadcastExecutor(context);
-    empty().doOnCompleted(() -> vanillaExecutor.execute(new Intent())).toBlocking().subscribe();
+    noRx(context, vanillaExecutor);
     System.out.println("\n");
-
-    context.reset();
 
     System.out.println("Rx approach; Vanilla executor");
     System.out.println("--------");
-    fromBroadcast(context, highPriorityReceiverFilter, v -> v.abortBroadcast())
-        .doOnNext(v -> {
-          System.out.println("Received by highest priority receiver");
-          throw new RuntimeException("Intentional exception");
-        }).subscribe();
-    fromBroadcast(context, lowPriorityReceiverFilter, v -> {})
-        .doOnNext(v -> System.out.println("Cascaded till lowest priority receiver")).subscribe();
-
-    OrderedBroadcastExecutor vanillaRxExecutor = new VanillaOrderedBroadcastExecutor(context);
-    empty().doOnCompleted(() -> vanillaRxExecutor.execute(new Intent())).toBlocking().subscribe();
+    rxBroadcast(context, new VanillaOrderedBroadcastExecutor(context));
     System.out.println("\n");
-
-    context.reset();
 
     System.out.println("Rx approach (with IntentProxy); Vanilla executor");
     System.out.println("--------");
-    fromBroadcastWithIntentProxy(context, highPriorityReceiverFilter)
-        .doOnNext(v -> {
-          System.out.println("Received by highest priority receiver");
-          v.proxy.abortBroadcast();
-          throw new RuntimeException("Intentional exception");
-        }).subscribe();
-    fromBroadcastWithIntentProxy(context, lowPriorityReceiverFilter)
-        .doOnNext(v -> System.out.println("Cascaded till lowest priority receiver")).subscribe();
-
-    OrderedBroadcastExecutor vanillaRxWithProxyExecutor = new VanillaOrderedBroadcastExecutor(context);
-    empty().doOnCompleted(() -> vanillaRxWithProxyExecutor.execute(new Intent())).toBlocking().subscribe();
+    rxBroadcastWithIntentProxy(context, new VanillaOrderedBroadcastExecutor(context));
     System.out.println("\n");
-
-    context.reset();
 
     System.out.println("No rx approach; Exception tolerating executor");
     System.out.println("--------");
-    context.subscribe(highPriorityNativeReceiver, highPriorityReceiverFilter);
-    context.subscribe(lowPriorityNativeReceiver, lowPriorityReceiverFilter);
-
-    OrderedBroadcastExecutor toleratingExecutor = new ExceptionToleratingOrderedBroadcastExecutor(context);
-    empty().doOnCompleted(() -> toleratingExecutor.execute(new Intent())).toBlocking().subscribe();
+    noRx(context, toleratingExecutor);
     System.out.println("\n");
-
-    context.reset();
 
     System.out.println("Rx approach; Exception tolerating executor");
     System.out.println("--------");
+    rxBroadcast(context, toleratingExecutor);
+    System.out.println("\n");
+
+    System.out.println("Rx approach (with IntentProxy); Exception tolerating executor");
+    System.out.println("--------");
+    rxBroadcastWithIntentProxy(context, toleratingExecutor);
+    System.out.println("\n");
+
+  }
+
+  private static void noRx(Context context, OrderedBroadcastExecutor executor) {
+    context.reset();
+    context.subscribe(highPriorityNativeReceiver, highPriorityReceiverFilter);
+    context.subscribe(lowPriorityNativeReceiver, lowPriorityReceiverFilter);
+
+    empty().doOnCompleted(() -> executor.execute(new Intent())).toBlocking().subscribe();
+  }
+
+  private static void rxBroadcast(Context context, OrderedBroadcastExecutor executor) {
+    context.reset();
     fromBroadcast(context, highPriorityReceiverFilter, v -> v.abortBroadcast())
         .doOnNext(v -> {
           System.out.println("Received by highest priority receiver");
@@ -98,14 +84,12 @@ public class Launcher {
     fromBroadcast(context, lowPriorityReceiverFilter, v -> {})
         .doOnNext(v -> System.out.println("Cascaded till lowest priority receiver")).subscribe();
 
-    OrderedBroadcastExecutor toleratingRxExecutor = new ExceptionToleratingOrderedBroadcastExecutor(context);
-    empty().doOnCompleted(() -> toleratingRxExecutor.execute(new Intent())).toBlocking().subscribe();
-    System.out.println("\n");
+    empty().doOnCompleted(() -> executor.execute(new Intent())).toBlocking().subscribe();
+  }
 
+  private static void rxBroadcastWithIntentProxy(Context context,
+      OrderedBroadcastExecutor executor) {
     context.reset();
-
-    System.out.println("Rx approach (with IntentProxy); Exception tolerating executor");
-    System.out.println("--------");
     fromBroadcastWithIntentProxy(context, highPriorityReceiverFilter)
         .doOnNext(v -> {
           System.out.println("Received by highest priority receiver");
@@ -115,9 +99,7 @@ public class Launcher {
     fromBroadcastWithIntentProxy(context, lowPriorityReceiverFilter)
         .doOnNext(v -> System.out.println("Cascaded till lowest priority receiver")).subscribe();
 
-    OrderedBroadcastExecutor toleratingRxWithProxyExecutor = new ExceptionToleratingOrderedBroadcastExecutor(context);
-    empty().doOnCompleted(() -> toleratingRxWithProxyExecutor.execute(new Intent())).toBlocking().subscribe();
-    System.out.println("\n");
+    empty().doOnCompleted(() -> executor.execute(new Intent())).toBlocking().subscribe();
   }
-  
+
 }

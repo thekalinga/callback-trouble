@@ -1,4 +1,4 @@
-If you look at the output of the launcher, you will see that the outputs of `No rx approach` & `Rx approach (with IntentProxy)` matches irrespective of whether the underlying extor used is `Vanilla executor` or `Exception tolerating executor`
+If you look at the output of the launcher, you will see that the outputs of `No rx approach` & `Rx approach (with IntentProxy)` matches irrespective of whether the underlying executor used is `Vanilla executor` or `Exception tolerating executor`; However, it is not the case with `Rx approach`
 
 Output of Launcher
 --
@@ -34,6 +34,5 @@ Cascaded till lowest priority receiver
 
 Rx approach (with IntentProxy); Exception tolerating executor
 --------
-Disconnected from the target VM, address: '127.0.0.1:45103', transport: 'socket'
 Received by highest priority receiver
 ```

@@ -12,8 +12,4 @@ public class BroadcastReceiverProxy {
     receiver.abortBroadcast();
   }
 
-  public void clearAbortBroadcast() {
-    receiver.clearAbortBroadcast();
-  }
-
 }

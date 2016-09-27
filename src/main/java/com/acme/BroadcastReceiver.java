@@ -8,10 +8,6 @@ public abstract class BroadcastReceiver {
     abortBroadcast = true;
   }
 
-  public void clearAbortBroadcast() {
-    abortBroadcast = false;
-  }
-
   public boolean shouldAbort() {
     return abortBroadcast;
   }
