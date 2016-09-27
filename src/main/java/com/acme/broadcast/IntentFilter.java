@@ -1,4 +1,4 @@
-package com.acme;
+package com.acme.broadcast;
 
 public class IntentFilter {
   private int priority;

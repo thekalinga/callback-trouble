@@ -1,5 +1,8 @@
-package com.acme;
+package com.acme.rx;
 
+import com.acme.broadcast.BroadcastReceiver;
+import com.acme.broadcast.Intent;
+import com.acme.broadcast.IntentFilter;
 import com.acme.platform.Context;
 import rx.Observable;
 
@@ -24,12 +27,12 @@ public class RxBroadcast {
     });
   }
 
-  public static Observable<IntentProxy> fromBroadcastWithIntentProxy(Context context, IntentFilter filter) {
+  public static Observable<IntentAndReceiverProxy> fromBroadcastWithIntentAndReceiverProxy(Context context, IntentFilter filter) {
     return Observable.create(subscriber -> {
       BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void handle(Intent intent) {
-          subscriber.onNext(new IntentProxy(intent, new BroadcastReceiverProxy(this)));
+          subscriber.onNext(new IntentAndReceiverProxy(intent, new BroadcastReceiverProxy(this)));
         }
       };
       context.subscribe(receiver, filter);

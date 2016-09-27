@@ -1,8 +1,7 @@
 package com.acme.platform;
 
-import com.acme.BroadcastReceiver;
-import com.acme.IntentFilter;
-import com.acme.IntentFilterAndReceiver;
+import com.acme.broadcast.BroadcastReceiver;
+import com.acme.broadcast.IntentFilter;
 
 import java.util.Set;
 import java.util.TreeSet;

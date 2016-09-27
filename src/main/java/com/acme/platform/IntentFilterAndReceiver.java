@@ -1,4 +1,7 @@
-package com.acme;
+package com.acme.platform;
+
+import com.acme.broadcast.BroadcastReceiver;
+import com.acme.broadcast.IntentFilter;
 
 public class IntentFilterAndReceiver {
   private BroadcastReceiver receiver;

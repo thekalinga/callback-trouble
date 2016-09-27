@@ -1,7 +1,7 @@
 package com.acme.platform.executor;
 
-import com.acme.Intent;
-import com.acme.IntentFilterAndReceiver;
+import com.acme.broadcast.Intent;
+import com.acme.platform.IntentFilterAndReceiver;
 import com.acme.platform.Context;
 
 import java.util.Set;

@@ -1,4 +1,6 @@
-package com.acme;
+package com.acme.rx;
+
+import com.acme.broadcast.BroadcastReceiver;
 
 public class BroadcastReceiverProxy {
 

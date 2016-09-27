@@ -1,12 +1,15 @@
 package com.acme;
 
+import com.acme.broadcast.BroadcastReceiver;
+import com.acme.broadcast.Intent;
+import com.acme.broadcast.IntentFilter;
 import com.acme.platform.Context;
 import com.acme.platform.executor.ExceptionToleratingOrderedBroadcastExecutor;
 import com.acme.platform.executor.OrderedBroadcastExecutor;
 import com.acme.platform.executor.VanillaOrderedBroadcastExecutor;
 
-import static com.acme.RxBroadcast.fromBroadcast;
-import static com.acme.RxBroadcast.fromBroadcastWithIntentProxy;
+import static com.acme.rx.RxBroadcast.fromBroadcast;
+import static com.acme.rx.RxBroadcast.fromBroadcastWithIntentAndReceiverProxy;
 import static rx.Observable.empty;
 
 public class Launcher {
@@ -44,9 +47,9 @@ public class Launcher {
     rxBroadcast(context, vanillaExecutor);
     System.out.println("\n");
 
-    System.out.println("Rx approach (with IntentProxy); Vanilla executor");
+    System.out.println("Rx approach (with IntentAndReceiverProxy); Vanilla executor");
     System.out.println("--------");
-    rxBroadcastWithIntentProxy(context, vanillaExecutor);
+    rxBroadcastWithIntentAndReceiverProxy(context, vanillaExecutor);
     System.out.println("\n");
 
     System.out.println("No rx approach; Exception tolerating executor");
@@ -59,9 +62,9 @@ public class Launcher {
     rxBroadcast(context, toleratingExecutor);
     System.out.println("\n");
 
-    System.out.println("Rx approach (with IntentProxy); Exception tolerating executor");
+    System.out.println("Rx approach (with IntentAndReceiverProxy); Exception tolerating executor");
     System.out.println("--------");
-    rxBroadcastWithIntentProxy(context, toleratingExecutor);
+    rxBroadcastWithIntentAndReceiverProxy(context, toleratingExecutor);
     System.out.println("\n");
 
   }
@@ -87,16 +90,16 @@ public class Launcher {
     empty().doOnCompleted(() -> executor.execute(new Intent())).toBlocking().subscribe();
   }
 
-  private static void rxBroadcastWithIntentProxy(Context context,
+  private static void rxBroadcastWithIntentAndReceiverProxy(Context context,
       OrderedBroadcastExecutor executor) {
     context.reset();
-    fromBroadcastWithIntentProxy(context, highPriorityReceiverFilter)
+    fromBroadcastWithIntentAndReceiverProxy(context, highPriorityReceiverFilter)
         .doOnNext(v -> {
           System.out.println("Received by highest priority receiver");
           v.proxy.abortBroadcast();
           throw new RuntimeException("Intentional exception");
         }).subscribe();
-    fromBroadcastWithIntentProxy(context, lowPriorityReceiverFilter)
+    fromBroadcastWithIntentAndReceiverProxy(context, lowPriorityReceiverFilter)
         .doOnNext(v -> System.out.println("Cascaded till lowest priority receiver")).subscribe();
 
     empty().doOnCompleted(() -> executor.execute(new Intent())).toBlocking().subscribe();

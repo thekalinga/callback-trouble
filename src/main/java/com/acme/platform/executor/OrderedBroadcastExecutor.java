@@ -1,6 +1,6 @@
 package com.acme.platform.executor;
 
-import com.acme.Intent;
+import com.acme.broadcast.Intent;
 
 public interface OrderedBroadcastExecutor {
   void execute(Intent intent);
