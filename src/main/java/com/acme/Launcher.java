@@ -80,10 +80,7 @@ public class Launcher {
   private static void rxBroadcast(Context context, OrderedBroadcastExecutor executor) {
     context.reset();
     fromBroadcast(context, highPriorityReceiverFilter, v -> v.abortBroadcast())
-        .doOnNext(v -> {
-          System.out.println("Received by highest priority receiver");
-          throw new RuntimeException("Intentional exception");
-        }).subscribe();
+        .subscribe(v -> System.out.println("Received by highest priority receiver"));
     fromBroadcast(context, lowPriorityReceiverFilter, v -> {})
         .doOnNext(v -> System.out.println("Cascaded till lowest priority receiver")).subscribe();
 
